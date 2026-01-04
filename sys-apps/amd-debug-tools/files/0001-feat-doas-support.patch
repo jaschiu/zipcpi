@@ -1,0 +1,285 @@
+From 617a8796ae1ba34be7444943ec7a828b2776355b Mon Sep 17 00:00:00 2001
+From: Jason Chiu <general@jasonchiu.slmail.me>
+Date: Fri, 19 Sep 2025 13:29:10 -0700
+Subject: [PATCH] feat: doas support
+
+---
+ src/amd_debug/common.py        | 122 +++++++++++++++++++++++++++++++--
+ src/amd_debug/prerequisites.py |   6 +-
+ src/amd_debug/s2idle.py        |  23 +++++--
+ src/amd_debug/sleep_report.py  |  10 +--
+ 4 files changed, 145 insertions(+), 16 deletions(-)
+
+diff --git a/src/amd_debug/common.py b/src/amd_debug/common.py
+index bc986b6..2ae0ea2 100644
+--- a/src/amd_debug/common.py
++++ b/src/amd_debug/common.py
+@@ -10,13 +10,17 @@ import importlib.metadata
+ import logging
+ import os
+ import platform
++import shutil
+ import time
+ import struct
+ import subprocess
+ import re
+ import sys
++import pwd
+ from ast import literal_eval
+ from datetime import date, timedelta
++from functools import cache
++from typing import Optional
+ 
+ 
+ class Colors:
+@@ -130,7 +134,8 @@ def _configure_log(prefix) -> str:
+         return
+ 
+     if prefix:
+-        user = os.environ.get("SUDO_USER")
++        # Prefer the invoking (non-root) user if tool was launched via sudo/doas
++        user = get_escalated_user()
+         home = os.path.expanduser(f"~{user if user else ''}")
+         path = os.environ.get("XDG_DATA_HOME") or os.path.join(
+             home, ".local", "share", "amd-debug-tools"
+@@ -143,9 +148,11 @@ def _configure_log(prefix) -> str:
+         if not os.path.exists(log):
+             with open(log, "w", encoding="utf-8") as f:
+                 f.write("")
+-            if "SUDO_UID" in os.environ:
+-                os.chown(path, int(os.environ["SUDO_UID"]), int(os.environ["SUDO_GID"]))
+-                os.chown(log, int(os.environ["SUDO_UID"]), int(os.environ["SUDO_GID"]))
++            uid = get_escalated_uid()
++            gid = get_escalated_gid()
++            if uid is not None and gid is not None:
++                os.chown(path, uid, gid)
++                os.chown(log, uid, gid)
+         level = logging.DEBUG
+     else:
+         log = "/dev/null"
+@@ -299,6 +306,103 @@ def is_root() -> bool:
+     """Check if the user is root"""
+     return os.geteuid() == 0
+ 
++@cache
++def get_sudo_or_doas() -> Optional[str]:
++    """Return which privilege escalator to use: 'sudo', 'doas', or None.
++
++    Preference order: sudo, then doas.
++    """
++    # If we were invoked via sudo, honor that to avoid surprises in tests/behavior
++    if os.environ.get("SUDO_USER"):
++        return "sudo"
++    if os.environ.get("DOAS_USER"):
++        return "doas"
++    if shutil.which("sudo"):
++        return "sudo"
++    if shutil.which("doas"):
++        return "doas"
++    return None
++
++
++def get_escalated_user() -> Optional[str]:
++    """Return the original invoking username when running via sudo/doas.
++
++    Checks SUDO_USER then DOAS_USER.
++    """
++    return os.environ.get("SUDO_USER") or os.environ.get("DOAS_USER")
++
++
++def get_escalated_uid() -> Optional[int]:
++    """Return the invoking user's UID if available.
++
++    For sudo, uses SUDO_UID. For doas (DOAS_USER), falls back to pwd lookup.
++    """
++    if os.environ.get("SUDO_UID"):
++        try:
++            return int(os.environ["SUDO_UID"])
++        except (TypeError, ValueError):
++            return None
++    user = os.environ.get("DOAS_USER")
++    if user:
++        try:
++            return pwd.getpwnam(user).pw_uid
++        except KeyError:
++            return None
++    return None
++
++
++def get_escalated_gid() -> Optional[int]:
++    """Return the invoking user's GID if available.
++
++    For sudo, uses SUDO_GID. For doas (DOAS_USER), falls back to pwd lookup.
++    """
++    if os.environ.get("SUDO_GID"):
++        try:
++            return int(os.environ["SUDO_GID"])
++        except (TypeError, ValueError):
++            return None
++    user = os.environ.get("DOAS_USER")
++    if user:
++        try:
++            return pwd.getpwnam(user).pw_gid
++        except KeyError:
++            return None
++    return None
++
++
++def build_escalate_prefix(
++    preserve_env: bool = False,
++    user: str | None = None,
++    env_vars: list[str] | None = None,
++) -> list[str]:
++    """Build a command prefix list for sudo/doas.
++
++    - preserve_env: when True and using sudo, pass -E (ignored for doas). If env_vars is
++      provided, targeted vars are set via the `env` command instead of using -E.
++    - user: when provided, run as this user (adds -u user)
++    - env_vars: list of env var names to forward to the elevated command by injecting an
++      `env NAME=value ...` after sudo/doas. Only variables present in os.environ are passed.
++    """
++    esc = get_sudo_or_doas()
++    if not esc:
++        return []
++    cmd = [esc]
++    # Only use -E for sudo when caller asked for it AND no targeted env passthrough is used.
++    if preserve_env and env_vars is None and esc == "sudo":
++        cmd.append("-E")
++    if user:
++        cmd.extend(["-u", user])
++    # If specific env vars are requested, inject them via `env`.
++    if env_vars:
++        env_pairs = []
++        for name in env_vars:
++            if name in os.environ:
++                env_pairs.append(f"{name}={os.environ[name]}")
++        if env_pairs:
++            cmd.append("env")
++            cmd.extend(env_pairs)
++    return cmd
++
+ 
+ def BIT(num):  # pylint: disable=invalid-name
+     """Return a bit shifted value"""
+@@ -383,8 +487,14 @@ def read_msr(msr, cpu):
+ def relaunch_sudo() -> None:
+     """Relaunch the script with sudo if not already running as root"""
+     if not is_root():
+-        logging.debug("Relaunching with sudo")
+-        os.execvp("sudo", ["sudo", "-E"] + sys.argv)
++        esc = get_sudo_or_doas()
++        if esc:
++            logging.debug("Relaunching with %s", esc)
++            # Preserve environment when possible (sudo). doas does not support -E.
++            prefix = build_escalate_prefix(preserve_env=True)
++            os.execvp(prefix[0], prefix + sys.argv)
++        else:
++            raise RuntimeError("No privilege escalator (sudo or doas) found on PATH")
+ 
+ 
+ def running_ssh():
+diff --git a/src/amd_debug/prerequisites.py b/src/amd_debug/prerequisites.py
+index 93fa43b..9c040ee 100644
+--- a/src/amd_debug/prerequisites.py
++++ b/src/amd_debug/prerequisites.py
+@@ -28,8 +28,11 @@ from amd_debug.common import (
+     clear_temporary_message,
+     find_ip_version,
+     get_distro,
++    get_group_color,
++    get_log_priority,
+     get_pretty_distro,
+     get_property_pyudev,
++    get_sudo_or_doas,
+     is_root,
+     minimum_kernel,
+     print_color,
+@@ -925,9 +928,10 @@ class PrerequisiteValidator(AmdTool):
+             prefix = "│ " if dev != devices[-1] else "└─"
+             debug_str += f"{prefix}{name} [{acpi_hid}] : {acpi_path}\n"
+             if "IDEA5002" in name:
++                esc = get_sudo_or_doas() or "sudo"
+                 remediation = (
+                     f"echo {parent.sys_path.split('/')[-1]} | "
+-                    f"sudo tee /sys/bus/i2c/drivers/{parent.driver}/unbind"
++                    f"{esc} tee /sys/bus/i2c/drivers/{parent.driver}/unbind"
+                 )
+ 
+                 self.db.record_prereq(f"{name} may cause spurious wakeups", "❌")
+diff --git a/src/amd_debug/s2idle.py b/src/amd_debug/s2idle.py
+index 4ac98b0..c402e0b 100644
+--- a/src/amd_debug/s2idle.py
++++ b/src/amd_debug/s2idle.py
+@@ -16,6 +16,8 @@ from amd_debug.common import (
+     show_log_info,
+     version,
+     running_ssh,
++    get_escalated_user,
++    build_escalate_prefix,
+ )
+ 
+ from amd_debug.validator import SleepValidator
+@@ -59,16 +61,27 @@ def display_report_file(fname, fmt) -> None:
+     if not is_root():
+         subprocess.call(["xdg-open", fname])
+         return
+-    user = os.environ.get("SUDO_USER")
++    user = get_escalated_user()
+     if user:
+-        # ensure that xdg tools will know how to display the file
+-        # (user may need to call tool with sudo -E)
++        # ensure that xdg tools will know how to display the file by forwarding
++        # the GUI/session environment to the user session.
+         if os.environ.get("XDG_SESSION_TYPE"):
+-            subprocess.call(["sudo", "-E", "-u", user, "xdg-open", fname])
++            gui_env = [
++                "DISPLAY",
++                "WAYLAND_DISPLAY",
++                "XDG_RUNTIME_DIR",
++                "DBUS_SESSION_BUS_ADDRESS",
++                "XDG_SESSION_TYPE",
++                "XDG_CURRENT_DESKTOP",
++                "DESKTOP_SESSION",
++                "XAUTHORITY",
++            ]
++            prefix = build_escalate_prefix(user=user, env_vars=gui_env)
++            subprocess.call(prefix + ["xdg-open", fname])
+         else:
+             print(
+                 "To display report automatically in browser launch tool "
+-                f"with '-E' argument (Example: sudo -E {sys.argv[0]})"
++                f"with preserved GUI environment (e.g., forward DISPLAY/DBUS vars or configure doas setenv)"
+             )
+ 
+ 
+diff --git a/src/amd_debug/sleep_report.py b/src/amd_debug/sleep_report.py
+index a253ffc..429732f 100644
+--- a/src/amd_debug/sleep_report.py
++++ b/src/amd_debug/sleep_report.py
+@@ -20,6 +20,8 @@ from amd_debug.common import (
+     get_log_priority,
+     print_color,
+     print_temporary_message,
++    get_escalated_uid,
++    get_escalated_gid,
+ )
+ 
+ from amd_debug.failures import (
+@@ -380,10 +382,10 @@ class SleepReport(AmdTool):
+         if self.fname:
+             with open(self.fname, "w", encoding="utf-8") as f:
+                 f.write(template.render(context))
+-            if "SUDO_UID" in os.environ:
+-                os.chown(
+-                    self.fname, int(os.environ["SUDO_UID"]), int(os.environ["SUDO_GID"])
+-                )
++            uid = get_escalated_uid()
++            gid = get_escalated_gid()
++            if uid is not None and gid is not None:
++                os.chown(self.fname, uid, gid)
+             return "Report written to {f}".format(f=self.fname)
+         else:
+             return template.render(context)
+-- 
+2.49.1
+

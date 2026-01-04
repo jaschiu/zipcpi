@@ -1,0 +1,116 @@
+From 7ab41309b8fb75da8a64c64341301ee1fdcaf38a Mon Sep 17 00:00:00 2001
+From: Stel Abrego <stel@stel.codes>
+Date: Mon, 23 Oct 2023 14:59:28 -0700
+Subject: [PATCH] Rename executable to trashy (#104)
+
+Since trashy no longer supports `trash <PATH> ...` and has given up on
+being a drop-in trash-cli replacement, the executable name `trash` is
+only a hinderance to greater adoption because it conflicts with the
+trash-cli executable of the same name. Giving the executable a unique
+name allows both programs to be installed without issue and also allows
+programs that wish to shell out to external commands for trashing files
+to support trashy by simply checking if an executable named `trashy` is
+present. Before this change, these programs had to check the output of
+the user's `trash` command to determine if it was from trash-cli or
+trashy.
+---
+ Cargo.toml                     |  2 +-
+ src/app.rs                     |  2 +-
+ src/app/command/completions.rs |  2 +-
+ src/app/command/list.rs        |  6 +++---
+ src/app/command/utils.rs       |  2 +-
+ src/filter.rs                  |  4 ++--
+ 9 files changed, 29 insertions(+), 29 deletions(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index cadef20..8df1404 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -17,7 +17,7 @@ rust-version = "1.62"
+ 
+ [[bin]]
+ path = "src/main.rs"
+-name = "trash"
++name = "trashy"
+ 
+ [dependencies]
+ clap_mangen = "0.2.9"
+diff --git a/src/app.rs b/src/app.rs
+index 8980c09..718bcbc 100644
+--- a/src/app.rs
++++ b/src/app.rs
+@@ -9,7 +9,7 @@ use command::Command;
+     version,
+     about,
+     long_about = None,
+-    after_help = "Note: `trash -h` prints a short and concise overview while `trash --help` gives all \
++    after_help = "Note: `trashy -h` prints a short and concise overview while `trashy --help` gives all \
+                  details.",
+ )]
+ pub struct Args {
+diff --git a/src/app/command/completions.rs b/src/app/command/completions.rs
+index 842c1dd..38f13f4 100644
+--- a/src/app/command/completions.rs
++++ b/src/app/command/completions.rs
+@@ -13,7 +13,7 @@ pub struct Args {
+ 
+ impl Args {
+     pub fn run(&self) -> Result<()> {
+-        clap_complete::generate(self.shell, &mut app::Args::command(), "trash", &mut io::stdout());
++        clap_complete::generate(self.shell, &mut app::Args::command(), "trashy", &mut io::stdout());
+         Ok(())
+     }
+ }
+diff --git a/src/app/command/list.rs b/src/app/command/list.rs
+index fa993c1..9171506 100644
+--- a/src/app/command/list.rs
++++ b/src/app/command/list.rs
+@@ -46,7 +46,7 @@ pub struct QueryArgs {
+     /// This option puts the oldest trash item at the bottom.
+     /// This will also affect 'empty' or 'restore' if used in either command.
+     /// Examples:
+-    /// 'trash empty --rev -n=10' will delete 10 oldest trash items are deleted.
++    /// 'trashy empty --rev -n=10' will delete 10 oldest trash items are deleted.
+     #[arg(long, verbatim_doc_comment)]
+     pub rev: bool,
+ 
+@@ -54,8 +54,8 @@ pub struct QueryArgs {
+     ///
+     /// This will also affect 'empty' or 'restore' if used in either command.
+     /// Examples:
+-    /// 'trash list -n=10' will list the ten newest trashed items.
+-    /// 'trash restore -n=10' will list restore the ten newest trashed items.
++    /// 'trashy list -n=10' will list the ten newest trashed items.
++    /// 'trashy restore -n=10' will list restore the ten newest trashed items.
+     #[arg(short = 'n', long = "max", verbatim_doc_comment)]
+     pub max: Option<NonZeroU32>,
+ }
+diff --git a/src/app/command/utils.rs b/src/app/command/utils.rs
+index 6db3286..c444511 100644
+--- a/src/app/command/utils.rs
++++ b/src/app/command/utils.rs
+@@ -37,7 +37,7 @@ pub struct Ranges {
+     /// Filter by ranges
+     ///
+     /// This should be used to restore specific items.
+-    /// To find the ranges, look at the 'i' column in the table shown by 'trash list'.
++    /// To find the ranges, look at the 'i' column in the table shown by 'trashy list'.
+     /// The option is called '--ranges' but you can also use individual indices by just typing out the number.
+     /// Ranges are zero based, inclusive at the start, and exclusive at the end, just like rust ranges.
+     /// Examples:
+diff --git a/src/filter.rs b/src/filter.rs
+index eb0b1b2..efffe97 100644
+--- a/src/filter.rs
++++ b/src/filter.rs
+@@ -62,9 +62,9 @@ pub struct FilterArgs {
+     /// This will filter using a pattern type specified in '--match'.
+     /// Using <PATTERNS> and '--match' gives the same effect as passing one of the pattern options explicitly.
+     /// So for example
+-    /// trash restore '~/projects/**' '~/builds/**' --match=glob
++    /// trashy restore '~/projects/**' '~/builds/**' --match=glob
+     /// is the same as
+-    /// trash restore --glob='~/project/**' --glob='~/builds/**'
++    /// trashy restore --glob='~/project/**' --glob='~/builds/**'
+     #[arg(verbatim_doc_comment)]
+     pub patterns: Vec<String>,
+ 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>maintainer-needed@gentoo.org</email>
+	</maintainer>
+	<longdescription>
+		Run an ffmpeg command with progress information yielded as a generator.
+		This package provides a Python wrapper around ffmpeg that parses its
+		output and yields progress information.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">slhck/ffmpeg-progress-yield</remote-id>
+	</upstream>
+</pkgmetadata>

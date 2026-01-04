@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>maintainer-needed@gentoo.org</email>
+	</maintainer>
+	<longdescription>
+		A utility for batch-normalizing audio using ffmpeg. This program
+		normalizes media files to a certain loudness level using the EBU R128
+		loudness normalization procedure. It can also perform RMS-based
+		normalization (where the mean is lifted or attenuated), or peak
+		normalization to a certain target level.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">slhck/ffmpeg-normalize</remote-id>
+	</upstream>
+</pkgmetadata>

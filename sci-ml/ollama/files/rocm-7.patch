@@ -1,0 +1,252 @@
+From e27fafa92dbbb207311445af26c2ca585d369120 Mon Sep 17 00:00:00 2001
+From: Pattrick Hueper <pattrick.hueper@vwac.net>
+Date: Fri, 7 Nov 2025 12:55:28 +0100
+Subject: [PATCH 1/6] add ROCm 7 preset
+
+copied from "ROCm 6" adapted  for the supported hardware mentioned in ROCm 7.1.0 Release Notes
+---
+ CMakePresets.json | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/CMakePresets.json b/CMakePresets.json
+index 6fcdf4d2597..6c21985ab52 100644
+--- a/CMakePresets.json
++++ b/CMakePresets.json
+@@ -74,7 +74,16 @@
+       "cacheVariables": {
+         "CMAKE_HIP_FLAGS": "-parallel-jobs=4",
+         "AMDGPU_TARGETS": "gfx940;gfx941;gfx942;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102;gfx1151;gfx1200;gfx1201;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-",
+-        "OLLAMA_RUNNER_DIR": "rocm"
++        "OLLAMA_RUNNER_DIR": "rocm_v6"
++      }
++    },
++    {
++      "name": "ROCm 7",
++      "inherits": [ "ROCm" ],
++      "cacheVariables": {
++        "CMAKE_HIP_FLAGS": "-parallel-jobs=4",
++        "AMDGPU_TARGETS": "gfx942;gfx950;gfx1030;gfx1100;gfx1101;gfx1102;gfx1151;gfx1200;gfx1201;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-",
++        "OLLAMA_RUNNER_DIR": "rocm_v7"
+       }
+     },
+     {
+@@ -136,6 +145,11 @@
+       "inherits": [ "ROCm" ],
+       "configurePreset": "ROCm 6"
+     },
++    {
++      "name": "ROCm 7",
++      "inherits": [ "ROCm" ],
++      "configurePreset": "ROCm 7"
++    },
+     {
+       "name": "Vulkan",
+       "targets": [ "ggml-vulkan" ],
+
+From 89fab52c2f1ee89f80d21ca2785f805c06812b7d Mon Sep 17 00:00:00 2001
+From: Pattrick Hueper <pattrick.hueper@vwac.net>
+Date: Fri, 7 Nov 2025 12:56:32 +0100
+Subject: [PATCH 2/6] include rocm dependencies in install
+
+roctx64 and rocroller are needed for ROCm to run
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2820dee0934..6ec587d8a2d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -131,7 +131,7 @@ if(CMAKE_HIP_COMPILER)
+         )
+         install(RUNTIME_DEPENDENCY_SET rocm
+                 DIRECTORIES ${HIP_BIN_INSTALL_DIR} ${HIP_LIB_INSTALL_DIR}
+-                PRE_INCLUDE_REGEXES hipblas rocblas amdhip64 rocsolver amd_comgr hsa-runtime64 rocsparse tinfo rocprofiler-register drm drm_amdgpu numa elf
++                PRE_INCLUDE_REGEXES hipblas rocblas amdhip64 rocsolver roctx64 rocroller amd_comgr hsa-runtime64 rocsparse tinfo rocprofiler-register drm drm_amdgpu numa elf
+                 PRE_EXCLUDE_REGEXES ".*"
+                 POST_EXCLUDE_REGEXES "system32"
+             RUNTIME DESTINATION ${OLLAMA_INSTALL_DIR} COMPONENT HIP
+
+From f0edf114c08bf50517ddc59673632896f270dee0 Mon Sep 17 00:00:00 2001
+From: Pattrick Hueper <pattrick.hueper@vwac.net>
+Date: Fri, 7 Nov 2025 12:59:32 +0100
+Subject: [PATCH 3/6] add a rocm_v7 build to the rocm FLAVOR
+
+also update rocn_v6 to 6.4.4
+---
+ Dockerfile | 33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/Dockerfile b/Dockerfile
+index c46cfe08e31..903b0a04438 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -3,14 +3,15 @@
+ ARG FLAVOR=${TARGETARCH}
+ ARG PARALLEL=8
+ 
+-ARG ROCMVERSION=6.3.3
++ARG ROCM6VERSION=6.4.4
++ARG ROCM7VERSION=7.1
+ ARG JETPACK5VERSION=r35.4.1
+ ARG JETPACK6VERSION=r36.4.0
+ ARG CMAKEVERSION=3.31.2
+ ARG VULKANVERSION=1.4.321.1
+ 
+ # We require gcc v10 minimum.  v10.3 has regressions, so the rockylinux 8.5 AppStream has the latest compatible version
+-FROM --platform=linux/amd64 rocm/dev-almalinux-8:${ROCMVERSION}-complete AS base-amd64
++FROM --platform=linux/amd64 rocm/dev-almalinux-8:${ROCM6VERSION}-complete AS base-amd64
+ RUN yum install -y yum-utils \
+     && yum-config-manager --add-repo https://dl.rockylinux.org/vault/rocky/8.5/AppStream/\$basearch/os/ \
+     && rpm --import https://dl.rockylinux.org/pub/rocky/RPM-GPG-KEY-Rocky-8 \
+@@ -29,6 +30,15 @@ RUN cp -r /${VULKANVERSION}/x86_64/include/* /usr/local/include/ \
+     && cp -r /${VULKANVERSION}/x86_64/lib/* /usr/local/lib
+ ENV PATH=/${VULKANVERSION}/x86_64/bin:$PATH
+ 
++FROM --platform=linux/amd64 rocm/dev-almalinux-8:${ROCM7VERSION}-complete AS base_rocm7-amd64
++RUN yum install -y yum-utils \
++    && yum-config-manager --add-repo https://dl.rockylinux.org/vault/rocky/8.5/AppStream/\$basearch/os/ \
++    && rpm --import https://dl.rockylinux.org/pub/rocky/RPM-GPG-KEY-Rocky-8 \
++    && dnf install -y yum-utils ccache gcc-toolset-10-gcc-10.2.1-8.2.el8 gcc-toolset-10-gcc-c++-10.2.1-8.2.el8 gcc-toolset-10-binutils-2.35-11.el8 \
++    && dnf install -y ccache \
++    && yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
++ENV PATH=/opt/rh/gcc-toolset-10/root/usr/bin:$PATH
++
+ FROM --platform=linux/arm64 almalinux:8 AS base-arm64
+ # install epel-release for ccache
+ RUN yum install -y yum-utils epel-release \
+@@ -41,6 +51,13 @@ ARG CMAKEVERSION
+ RUN curl -fsSL https://github.com/Kitware/CMake/releases/download/v${CMAKEVERSION}/cmake-${CMAKEVERSION}-linux-$(uname -m).tar.gz | tar xz -C /usr/local --strip-components 1
+ ENV LDFLAGS=-s
+ 
++FROM base_rocm7-${TARGETARCH} AS base_rocm7
++ARG CMAKEVERSION
++RUN curl -fsSL https://github.com/Kitware/CMake/releases/download/v${CMAKEVERSION}/cmake-${CMAKEVERSION}-linux-$(uname -m).tar.gz | tar xz -C /usr/local --strip-components 1
++COPY CMakeLists.txt CMakePresets.json .
++COPY ml/backend/ggml/ggml ml/backend/ggml/ggml
++ENV LDFLAGS=-s
++
+ FROM base AS cpu
+ RUN dnf install -y gcc-toolset-11-gcc gcc-toolset-11-gcc-c++
+ ENV PATH=/opt/rh/gcc-toolset-11/root/usr/bin:$PATH
+@@ -101,6 +118,15 @@ RUN --mount=type=cache,target=/root/.ccache \
+         && cmake --install build --component HIP --strip --parallel ${PARALLEL}
+ RUN rm -f dist/lib/ollama/rocm/rocblas/library/*gfx90[06]*
+ 
++FROM base_rocm7 AS rocm-7
++ENV PATH=/opt/rocm/hcc/bin:/opt/rocm/hip/bin:/opt/rocm/bin:/opt/rocm/hcc/bin:$PATH
++ARG PARALLEL
++RUN --mount=type=cache,target=/root/.ccache \
++    cmake --preset 'ROCm 7' \
++        && cmake --build --parallel ${PARALLEL} --preset 'ROCm 7' \
++        && cmake --install build --component HIP --strip --parallel ${PARALLEL}
++RUN rm -f dist/lib/ollama/rocm/rocblas/library/*gfx90[06]*
++
+ FROM --platform=linux/arm64 nvcr.io/nvidia/l4t-jetpack:${JETPACK5VERSION} AS jetpack-5
+ ARG CMAKEVERSION
+ RUN apt-get update && apt-get install -y curl ccache \
+@@ -163,6 +189,7 @@ COPY --from=jetpack-6 dist/lib/ollama/ /lib/ollama/
+ 
+ FROM scratch AS rocm
+ COPY --from=rocm-6 dist/lib/ollama /lib/ollama
++COPY --from=rocm-7 dist/lib/ollama /lib/ollama
+ 
+ FROM ${FLAVOR} AS archive
+ ARG VULKANVERSION
+@@ -177,7 +204,7 @@ RUN apt-get update \
+ COPY --from=archive /bin /usr/bin
+ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ COPY --from=archive /lib/ollama /usr/lib/ollama
+-ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
++ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/lib/ollama:/usr/lib/ollama/rocm_v7
+ ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ ENV NVIDIA_VISIBLE_DEVICES=all
+ ENV OLLAMA_HOST=0.0.0.0:11434
+
+From fd84f6426630f2c97615dad2696c25f2763d39c6 Mon Sep 17 00:00:00 2001
+From: Pattrick Hueper <pattrick.hueper@vwac.net>
+Date: Fri, 7 Nov 2025 13:02:51 +0100
+Subject: [PATCH 4/6] update runtime to Ubuntu 25.10
+
+---
+ Dockerfile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Dockerfile b/Dockerfile
+index 903b0a04438..6a095a18229 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -196,7 +196,7 @@ ARG VULKANVERSION
+ COPY --from=cpu dist/lib/ollama /lib/ollama
+ COPY --from=build /bin/ollama /bin/ollama
+ 
+-FROM ubuntu:24.04
++FROM ubuntu:25.10
+ RUN apt-get update \
+     && apt-get install -y ca-certificates libvulkan1 \
+     && apt-get clean \
+
+From 8939acd913aeb24ba5227419bea6af0dbdc25980 Mon Sep 17 00:00:00 2001
+From: Pattrick Hueper <pattrick.hueper@vwac.net>
+Date: Fri, 7 Nov 2025 13:21:39 +0100
+Subject: [PATCH 5/6] clean Dockefile
+
+separate all stages with new line for better overview
+---
+ Dockerfile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Dockerfile b/Dockerfile
+index 6a095a18229..b3ff1cba335 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -196,6 +196,8 @@ ARG VULKANVERSION
+ COPY --from=cpu dist/lib/ollama /lib/ollama
+ COPY --from=build /bin/ollama /bin/ollama
+ 
++
++
+ FROM ubuntu:25.10
+ RUN apt-get update \
+     && apt-get install -y ca-certificates libvulkan1 \
+
+From 060cba38c5a4b1de67c6590fd7dba923893d97fa Mon Sep 17 00:00:00 2001
+From: Pattrick Hueper <phueper@hueper.net>
+Date: Fri, 28 Nov 2025 18:11:15 +0100
+Subject: [PATCH 6/6] update to ROCm 7.1.1
+
+---
+ Dockerfile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Dockerfile b/Dockerfile
+index b3ff1cba335..47b42c2fc09 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -4,7 +4,7 @@ ARG FLAVOR=${TARGETARCH}
+ ARG PARALLEL=8
+ 
+ ARG ROCM6VERSION=6.4.4
+-ARG ROCM7VERSION=7.1
++ARG ROCM7VERSION=7.1.1
+ ARG JETPACK5VERSION=r35.4.1
+ ARG JETPACK6VERSION=r36.4.0
+ ARG CMAKEVERSION=3.31.2
+@@ -157,7 +157,7 @@ COPY ml/backend/ggml/ggml ml/backend/ggml/ggml
+ RUN --mount=type=cache,target=/root/.ccache \
+     cmake --preset 'Vulkan' \
+         && cmake --build --parallel --preset 'Vulkan' \
+-        && cmake --install build --component Vulkan --strip --parallel 8 
++        && cmake --install build --component Vulkan --strip --parallel 8
+ 
+ 
+ FROM base AS build
+@@ -206,7 +206,7 @@ RUN apt-get update \
+ COPY --from=archive /bin /usr/bin
+ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ COPY --from=archive /lib/ollama /usr/lib/ollama
+-ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/lib/ollama:/usr/lib/ollama/rocm_v7
++ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/lib/ollama:/usr/lib/ollama/rocm
+ ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ ENV NVIDIA_VISIBLE_DEVICES=all
+ ENV OLLAMA_HOST=0.0.0.0:11434
