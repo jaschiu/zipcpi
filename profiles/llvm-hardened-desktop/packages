@@ -1,0 +1,4 @@
+*llvm-runtimes/openmp
+*llvm-core/polly
+*sys-devel/mold
+
