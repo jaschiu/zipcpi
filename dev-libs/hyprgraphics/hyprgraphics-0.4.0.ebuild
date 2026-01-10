@@ -14,12 +14,15 @@ SLOT="0"
 KEYWORDS="~amd64"
 
 RDEPEND="
-	>=gui-libs/hyprutils-0.8.2:=
+	gnome-base/librsvg
+	gui-libs/hyprutils:=
 	media-libs/libjpeg-turbo:=
 	media-libs/libjxl:=
 	media-libs/libspng
 	media-libs/libwebp:=
 	sys-apps/file
 	x11-libs/cairo
+	x11-libs/pango
+	x11-libs/pixman
 "
 DEPEND="${RDEPEND}"

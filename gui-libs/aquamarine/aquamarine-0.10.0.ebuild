@@ -22,8 +22,9 @@ SLOT="0/$(ver_cut 1-2)"
 # Upstream states that the simpleWindow test is broken, see bug 936653
 RESTRICT="test"
 RDEPEND="
-	>=dev-libs/libinput-1.26.1
+	>=dev-libs/libinput-1.26.0
 	dev-libs/wayland
+	dev-libs/wayland-protocols
 	>=dev-util/hyprwayland-scanner-0.4.5
 	>=gui-libs/hyprutils-0.8.4:=
 	media-libs/libdisplay-info:=

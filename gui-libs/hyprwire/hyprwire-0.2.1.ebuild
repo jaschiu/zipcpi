@@ -22,6 +22,10 @@ LICENSE="BSD"
 SLOT="0/$(ver_cut 1-2)"
 IUSE="test"
 RESTRICT="!test? ( test )"
+DEPEND="
+	dev-libs/libffi
+	>=gui-libs/hyprutils-0.9.0
+"
 RDEPEND="${DEPEND}"
 
 src_configure() {

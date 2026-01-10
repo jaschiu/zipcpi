@@ -27,15 +27,17 @@ BDEPEND="
 	test? ( dev-cpp/gtest )
 "
 DEPEND="
-	>=dev-libs/hyprgraphics-0.4.0
+	>=dev-libs/hyprgraphics-0.3.0
 	dev-libs/wayland
 	dev-libs/wayland-protocols
 	>=gui-libs/aquamarine-0.10.0
 	dev-libs/glib:2
 	>=dev-libs/hyprlang-0.6.0
-	>=gui-libs/hyprutils-0.10.4
+	>=gui-libs/hyprutils-0.11.0
 	dev-libs/iniparser
+	>=dev-util/hyprwayland-scanner-0.4.0
 	media-libs/libglvnd
+	media-libs/mesa[opengl]
 	x11-libs/cairo
 	x11-libs/libdrm
 	x11-libs/libxkbcommon

@@ -35,22 +35,22 @@ RDEPEND="
 	dev-cpp/tomlplusplus
 	dev-libs/glib:2
 	>=dev-libs/hyprlang-0.6.7
-	dev-libs/libinput:=
-	>=dev-libs/hyprgraphics-0.1.8:=
+	>=dev-libs/libinput-1.28.0:=
+	>=dev-libs/hyprgraphics-0.1.6:=
 	dev-libs/re2:=
 	dev-cpp/muParser:=
 	>=dev-libs/udis86-1.7.2
 	>=dev-libs/wayland-1.22.90
-	>=gui-libs/aquamarine-0.9.5:=
-	>=gui-libs/hyprcursor-0.1.9
+	>=gui-libs/aquamarine-0.9.3:=
+	>=gui-libs/hyprcursor-0.1.7
 	>=gui-libs/hyprutils-0.11.0:=
 	>=gui-libs/hyprwire-0.2.1:=
 	media-libs/libglvnd
-	media-libs/mesa
+	media-libs/mesa[opengl]
 	sys-apps/util-linux
 	x11-libs/cairo
 	x11-libs/libdrm
-	x11-libs/libxkbcommon
+	>=x11-libs/libxkbcommon-1.11.0
 	x11-libs/pango
 	x11-libs/pixman
 	x11-libs/libXcursor
@@ -72,7 +72,7 @@ BDEPEND="
 	|| ( >=sys-devel/gcc-15:* >=llvm-core/clang-19:* )
 	app-misc/jq
 	dev-build/cmake
-	>=dev-util/hyprwayland-scanner-0.4.5
+	>=dev-util/hyprwayland-scanner-0.3.10
 	virtual/pkgconfig
 "
 
