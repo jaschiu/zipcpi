@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit cmake toolchain-funcs
+inherit fcaps cmake toolchain-funcs
 
 DESCRIPTION="A dynamic tiling Wayland compositor that doesn't sacrifice on its looks"
 HOMEPAGE="https://github.com/hyprwm/Hyprland"
@@ -75,6 +75,10 @@ BDEPEND="
 	>=dev-util/hyprwayland-scanner-0.3.10
 	virtual/pkgconfig
 "
+
+FILECAPS=(
+	cap_sys_nice usr/bin/Hyprland
+)
 
 pkg_setup() {
 	[[ ${MERGE_TYPE} == binary ]] && return
