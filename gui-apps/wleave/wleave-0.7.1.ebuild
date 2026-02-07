@@ -24,8 +24,8 @@ CRATES="
 	bytemuck@1.23.2
 	byteorder-lite@0.1.0
 	byteorder@1.5.0
-	cairo-rs@0.20.12
-	cairo-sys-rs@0.20.10
+	cairo-rs@0.21.5
+	cairo-sys-rs@0.21.5
 	cast@0.3.0
 	cfg-expr@0.20.2
 	cfg-if@1.0.3
@@ -36,14 +36,18 @@ CRATES="
 	clap_lex@0.7.5
 	color_quant@1.1.0
 	colorchoice@1.0.4
+	convert_case@0.10.0
 	crc32fast@1.5.0
 	crossbeam-deque@0.8.6
 	crossbeam-epoch@0.9.18
 	crossbeam-utils@0.8.21
+	cssparser-color@0.3.0
 	cssparser-macros@0.6.1
-	cssparser@0.31.2
+	cssparser@0.35.0
+	cssparser@0.36.0
 	data-url@0.3.2
-	derive_more@0.99.20
+	derive_more-impl@2.1.1
+	derive_more@2.1.1
 	dirs-sys@0.5.0
 	dirs@6.0.0
 	displaydoc@0.2.5
@@ -51,12 +55,14 @@ CRATES="
 	dtoa@1.0.10
 	either@1.15.0
 	encoding_rs@0.8.35
+	env_home@0.1.0
 	equivalent@1.0.2
 	errno@0.3.13
+	fastrand@2.3.0
 	fdeflate@0.3.7
 	field-offset@0.3.6
 	flate2@1.1.2
-	float-cmp@0.9.0
+	float-cmp@0.10.0
 	form_urlencoded@1.2.2
 	futf@0.1.5
 	futures-channel@0.3.31
@@ -67,30 +73,30 @@ CRATES="
 	futures-task@0.3.31
 	futures-util@0.3.31
 	fxhash@0.2.1
-	gdk-pixbuf-sys@0.20.10
-	gdk-pixbuf@0.20.10
-	gdk4-sys@0.9.6
-	gdk4@0.9.6
+	gdk-pixbuf-sys@0.21.5
+	gdk-pixbuf@0.21.5
+	gdk4-sys@0.10.3
+	gdk4@0.10.3
 	getrandom@0.2.16
 	gif@0.13.3
 	gimli@0.31.1
-	gio-sys@0.20.10
-	gio@0.20.12
+	gio-sys@0.21.5
+	gio@0.21.5
 	gl@0.14.0
 	gl_generator@0.14.0
-	glib-macros@0.20.12
-	glib-sys@0.20.10
-	glib@0.20.12
-	gobject-sys@0.20.10
-	graphene-rs@0.20.10
-	graphene-sys@0.20.10
-	gsk4-sys@0.9.6
-	gsk4@0.9.6
-	gtk4-layer-shell-sys@0.3.0
-	gtk4-layer-shell@0.5.0
-	gtk4-macros@0.9.5
-	gtk4-sys@0.9.6
-	gtk4@0.9.7
+	glib-macros@0.21.5
+	glib-sys@0.21.5
+	glib@0.21.5
+	gobject-sys@0.21.5
+	graphene-rs@0.21.5
+	graphene-sys@0.21.5
+	gsk4-sys@0.10.3
+	gsk4@0.10.3
+	gtk4-layer-shell-sys@0.5.2
+	gtk4-layer-shell@0.7.1
+	gtk4-macros@0.10.3
+	gtk4-sys@0.10.3
+	gtk4@0.10.3
 	hashbrown@0.15.5
 	heck@0.5.0
 	icu_collections@2.0.0
@@ -107,16 +113,16 @@ CRATES="
 	indexmap@2.11.0
 	is_ci@1.2.0
 	is_terminal_polyfill@1.70.1
-	itertools@0.13.0
+	itertools@0.14.0
 	itoa@1.0.15
 	khronos_api@3.1.0
 	language-tags@0.3.2
 	lazy_static@1.5.0
-	libadwaita-sys@0.7.2
-	libadwaita@0.7.2
+	libadwaita-sys@0.8.1
+	libadwaita@0.8.1
 	libc@0.2.175
 	libredox@0.1.9
-	librsvg@2.60.0
+	librsvg@2.61.3
 	linux-raw-sys@0.9.4
 	litemap@0.8.0
 	locale_config@0.3.0
@@ -124,7 +130,7 @@ CRATES="
 	log@0.4.27
 	mac@0.1.1
 	malloc_buf@0.0.6
-	markup5ever@0.12.1
+	markup5ever@0.35.0
 	matchers@0.2.0
 	matrixmultiply@0.3.10
 	memchr@2.7.5
@@ -149,36 +155,34 @@ CRATES="
 	once_cell_polyfill@1.70.1
 	option-ext@0.2.0
 	owo-colors@4.2.2
-	pango-sys@0.20.10
-	pango@0.20.12
-	pangocairo-sys@0.20.10
-	pangocairo@0.20.10
+	pango-sys@0.21.5
+	pango@0.21.5
+	pangocairo-sys@0.21.5
+	pangocairo@0.21.5
 	parking_lot@0.12.4
 	parking_lot_core@0.9.11
 	paste@1.0.15
 	percent-encoding@2.3.2
-	phf@0.10.1
 	phf@0.11.3
-	phf_codegen@0.10.0
+	phf@0.13.1
 	phf_codegen@0.11.3
-	phf_generator@0.10.0
 	phf_generator@0.11.3
+	phf_generator@0.13.1
 	phf_macros@0.11.3
-	phf_shared@0.10.0
+	phf_macros@0.13.1
 	phf_shared@0.11.3
+	phf_shared@0.13.1
 	pin-project-lite@0.2.16
 	pin-utils@0.1.0
 	pkg-config@0.3.32
 	png@0.17.16
 	potential_utf@0.1.3
-	ppv-lite86@0.2.21
 	precomputed-hash@0.1.1
 	proc-macro-crate@3.3.0
 	proc-macro2@1.0.101
 	quick-error@2.0.1
 	quote@1.0.40
 	rand@0.8.5
-	rand_chacha@0.3.1
 	rand_core@0.6.4
 	rawpointer@0.2.1
 	rayon-core@1.13.0
@@ -196,22 +200,22 @@ CRATES="
 	ryu@1.0.20
 	safe_arch@0.7.4
 	scopeguard@1.2.0
-	selectors@0.25.0
+	selectors@0.31.0
 	semver@1.0.26
 	serde@1.0.219
 	serde_derive@1.0.219
 	serde_json@1.0.143
 	serde_spanned@0.6.9
-	servo_arc@0.3.0
+	servo_arc@0.4.3
 	sharded-slab@0.1.7
 	simba@0.9.0
 	simd-adler32@0.3.7
-	siphasher@0.3.11
 	siphasher@1.0.1
 	slab@0.4.11
 	smallvec@1.15.1
 	stable_deref_trait@1.2.0
 	string_cache@0.8.9
+	string_cache@0.9.0
 	string_cache_codegen@0.5.4
 	strsim@0.11.1
 	supports-color@3.0.2
@@ -241,6 +245,7 @@ CRATES="
 	typenum@1.18.0
 	unicode-ident@1.0.18
 	unicode-linebreak@0.1.5
+	unicode-segmentation@1.12.0
 	unicode-width@0.1.14
 	unicode-width@0.2.1
 	url@2.5.7
@@ -250,14 +255,15 @@ CRATES="
 	valuable@0.1.1
 	version-compare@0.2.0
 	wasi@0.11.1+wasi-snapshot-preview1
+	web_atoms@0.1.3
 	weezl@0.1.10
+	which@8.0.0
 	wide@0.7.33
 	winapi-i686-pc-windows-gnu@0.4.0
 	winapi-x86_64-pc-windows-gnu@0.4.0
 	winapi@0.3.9
 	windows-link@0.1.3
 	windows-sys@0.52.0
-	windows-sys@0.59.0
 	windows-sys@0.60.2
 	windows-targets@0.52.6
 	windows-targets@0.53.3
@@ -278,13 +284,12 @@ CRATES="
 	windows_x86_64_msvc@0.52.6
 	windows_x86_64_msvc@0.53.0
 	winnow@0.7.13
+	winsafe@0.0.19
 	writeable@0.6.1
 	xml-rs@0.8.27
-	xml5ever@0.18.1
+	xml5ever@0.35.0
 	yoke-derive@0.8.0
 	yoke@0.8.0
-	zerocopy-derive@0.8.26
-	zerocopy@0.8.26
 	zerofrom-derive@0.1.6
 	zerofrom@0.1.6
 	zerotrie@0.2.2
@@ -294,38 +299,53 @@ CRATES="
 	zune-jpeg@0.4.20
 "
 
-inherit cargo git-r3 shell-completion
+inherit cargo shell-completion
 
 DESCRIPTION="A Wayland layer-shell logout prompt written in GTK"
 HOMEPAGE="https://github.com/AMNatty/wleave"
 SRC_URI="
 	${CARGO_CRATE_URIS}
+        https://github.com/AMNatty/${PN}/archive/refs/tags/${PV}.tar.gz
 "
 
 LICENSE="MIT"
 # Dependent crate licenses
 LICENSE+="
-	Apache-2.0 Apache-2.0-with-LLVM-exceptions ISC MIT MPL-2.0
-	Unicode-DFS-2016
+	Apache-2.0 Apache-2.0-with-LLVM-exceptions BSD ISC LGPL-2.1+ MIT
+	MPL-2.0 Unicode-3.0
 "
 SLOT="0"
 KEYWORDS="~amd64"
 
-BDEPEND='app-text/scdoc'
+BDEPEND='
+	app-text/scdoc
+	virtual/pkgconfig
+	'
 DEPEND='
-        >=gui-libs/gtk-4.17:4
-        >=gui-libs/libadwaita-1.7
-        gnome-base/librsvg
-        gui-libs/gtk4-layer-shell
+	>=dev-libs/glib-2.56.2
+	gnome-base/librsvg
+	>=gui-libs/libadwaita-1.7
+	>=gui-libs/gtk-4.18:4
+	gui-libs/gtk4-layer-shell
+	>=x11-libs/cairo-1.14
+	>=x11-libs/gdk-pixbuf-2.36.8
+	>=x11-libs/pango-1.40
        '
 
+pkg_setup() {
+    export PKG_CONFIG_ALLOW_CROSS=1
+    rust_pkg_setup
+}
 
-EGIT_REPO_URI="https://github.com/AMNatty/wleave.git"
-EGIT_BRANCH=development
+src_configure() {
+    sed -i 's/^version *= *".\+"$/version = "'"$PV"'"/' Cargo.toml
+    cargo_src_configure
 
-src_unpack() {
-    git-r3_src_unpack
-    cargo_live_src_unpack
+    scdoc < man/wleave.1.scd > wleave.1
+    scdoc < man/wleave.5.scd > wleave.5
+    scdoc < man/wleave.json.5.scd > wleave.json.5
+
+    OUT_DIR=completions cargo run --package wleave_completions --bin wleave_completions
 }
 
 src_compile() {
