@@ -22,11 +22,12 @@ RDEPEND="
   >=dev-libs/jansson-2.12.0
   >=dev-libs/libgcrypt-1.10.1
   >=media-libs/libpng-1.6.30
-  >=dev-libs/libcotp-3.0.0
+  >=dev-libs/libcotp-4.0.0
   >=media-gfx/zbar-0.20
   >=media-gfx/qrencode-4.0.2
   tray? ( >=dev-libs/libayatana-appindicator-0.1 )
   >=app-crypt/libsecret-0.20
+  >=sys-apps/util-linux-2.34
 "
 
 DEPEND="

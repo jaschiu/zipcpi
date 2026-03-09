@@ -15,7 +15,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 RDEPEND="
-  || ( >=dev-libs/libgcrypt-1.8.0 >=dev-libs/openssl-3.0.0 >=net-libs/mbedtls-3.6.4 )
+  || ( >=dev-libs/libgcrypt-1.8.0 >=dev-libs/openssl-3.0.0 net-libs/mbedtls:2 net-libs/mbedtls:3 )
 "
 
 DEPEND="
