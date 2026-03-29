@@ -1,0 +1,59 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index b5ee79f..1ffb340 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -131,7 +131,7 @@ tree-sitter-yaml = "0.7.0"
+ tree-sitter-zig = "1.1.2"
+ 
+ [target.'cfg(not(any(windows, target_os = "illumos", target_os = "freebsd")))'.dependencies]
+-tikv-jemallocator = "0.6"
++tikv-jemallocator = { version = "0.6", optional = true }
+ 
+ [dev-dependencies]
+ assert_cmd = "2.0.17"
+@@ -164,3 +164,4 @@ assets = [
+ ]
+ 
+ [features]
++jemalloc = ["tikv-jemallocator"]
+diff --git a/build.rs b/build.rs
+index a58ec01..842db50 100644
+--- a/build.rs
++++ b/build.rs
+@@ -135,10 +135,9 @@ fn main() {
+     // Use 64-KiB pages with jemalloc. This solves "<jemalloc>:
+     // Unsupported system page size" errors, and performs the same as
+     // jemalloc's default settings.
+-    //
+-    // Note that difftastic does not use jemalloc on all operating
+-    // systems, but it's harmless to set this unconditionally.
+-    println!("cargo:rustc-env=JEMALLOC_SYS_WITH_LG_PAGE=16");
++    if std::env::var("CARGO_FEATURE_JEMALLOC").is_ok() {
++        println!("cargo:rustc-env=JEMALLOC_SYS_WITH_LG_PAGE=16");
++    }
+ }
+ 
+ fn commit_info() {
+diff --git a/src/main.rs b/src/main.rs
+index 09f0f66..e649960 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -96,10 +96,16 @@ use crate::parse::syntax;
+ ///
+ /// For reference, Jemalloc uses 10-20% more time (although up to 33%
+ /// more instructions) when testing on sample files.
+-#[cfg(not(any(windows, target_os = "illumos", target_os = "freebsd")))]
++#[cfg(all(
++    feature = "jemalloc",
++    not(any(windows, target_os = "illumos", target_os = "freebsd"))
++))]
+ use tikv_jemallocator::Jemalloc;
+ 
+-#[cfg(not(any(windows, target_os = "illumos", target_os = "freebsd")))]
++#[cfg(all(
++    feature = "jemalloc",
++    not(any(windows, target_os = "illumos", target_os = "freebsd"))
++))]
+ #[global_allocator]
+ static GLOBAL: Jemalloc = Jemalloc;
+ 
