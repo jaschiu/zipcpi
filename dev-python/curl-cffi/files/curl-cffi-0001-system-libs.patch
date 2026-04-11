@@ -1,87 +1,101 @@
 diff --git a/libs.json b/libs.json
-index 5d63db1..94aa047 100644
+index 8fcfc2b..4e6d51c 100644
 --- a/libs.json
 +++ b/libs.json
-@@ -50,7 +50,7 @@
+@@ -52,7 +52,7 @@
+         "machine": "x86_64",
          "pointer_size": 64,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "gnu",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "x86_64"
-@@ -61,7 +61,7 @@
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "x86_64"
+@@ -62,7 +62,7 @@
+         "machine": "x86_64",
          "pointer_size": 64,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "musl",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "x86_64"
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "x86_64"
 @@ -72,7 +72,7 @@
+         "machine": "i686",
          "pointer_size": 32,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "gnu",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "i386"
-@@ -83,7 +83,7 @@
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "i386"
+@@ -82,7 +82,7 @@
+         "machine": "aarch64",
          "pointer_size": 64,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "gnu",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "aarch64"
-@@ -94,7 +94,7 @@
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "aarch64"
+@@ -102,7 +102,7 @@
+         "machine": "riscv64",
          "pointer_size": 64,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "gnu",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "riscv64"
-@@ -116,7 +116,7 @@
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "riscv64"
+@@ -112,7 +112,7 @@
+         "machine": "aarch64",
+         "pointer_size": 64,
+         "sysname": "linux",
+-        "link_type": "static",
++        "link_type": "dynamic",
+         "libc": "musl",
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "aarch64"
+@@ -122,7 +122,7 @@
+         "machine": "armv6l",
          "pointer_size": 32,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "gnueabihf",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "arm"
-@@ -127,7 +127,7 @@
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "arm"
+@@ -132,7 +132,7 @@
+         "machine": "armv7l",
          "pointer_size": 32,
-         "libdir": "",
          "sysname": "linux",
 -        "link_type": "static",
 +        "link_type": "dynamic",
          "libc": "gnueabihf",
-         "so_name": "libcurl-impersonate.so",
-         "so_arch": "arm"
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "arm"
+@@ -142,7 +142,7 @@
+         "machine": "loongarch64",
+         "pointer_size": 64,
+         "sysname": "linux",
+-        "link_type": "static",
++        "link_type": "dynamic",
+         "libc": "gnu",
+         "obj_name": "libcurl-impersonate.a",
+         "arch": "loongarch64"
 diff --git a/scripts/build.py b/scripts/build.py
-index f40a6f0..6b74863 100644
+index 64328ca..24e2a8e 100644
 --- a/scripts/build.py
 +++ b/scripts/build.py
-@@ -141,7 +141,6 @@ def get_curl_libraries():
+@@ -146,10 +146,9 @@ def get_curl_libraries():
  ffibuilder = FFI()
  system = platform.system()
  root_dir = Path(__file__).parent.parent
 -download_libcurl()
  
- 
- ffibuilder.set_source(
-@@ -151,7 +150,6 @@ ffibuilder.set_source(
-     """,
-     # FIXME from `curl-impersonate`
-     libraries=get_curl_libraries(),
--    extra_objects=get_curl_archives(),
-     library_dirs=[arch["libdir"]],
-     source_extension=".c",
-     include_dirs=[
+ # With mega archive, we only have one to link
+-static_libs = get_curl_archives()
++static_libs = []
+ extra_link_args = []
+ if is_static:
+     if system == "Darwin":

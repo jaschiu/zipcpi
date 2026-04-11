@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_1{0,1,2,3,4} )
+PYTHON_COMPAT=( python3_1{0..4} )
 DISTUTILS_EXT=1
 inherit distutils-r1 pypi
 
@@ -15,9 +15,12 @@ LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="~amd64"
 
-RDEPEND="dev-python/cffi[${PYTHON_USEDEP}]
-	dev-python/certifi[${PYTHON_USEDEP}]
-	>=net-misc/curl-impersonate-1.0.0"
+RDEPEND="
+	>=dev-python/cffi-2.0.0[${PYTHON_USEDEP}]
+	>=dev-python/certifi-2024.2.2[${PYTHON_USEDEP}]
+	dev-python/rich[${PYTHON_USEDEP}]
+	>=net-misc/curl-impersonate-1.0.0
+	"
 
 PATCHES=( "${FILESDIR}/${PN}-0001-system-libs.patch" )
 
