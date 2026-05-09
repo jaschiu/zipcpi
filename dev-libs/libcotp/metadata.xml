@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		C library that generates TOTP and HOTP according to RFC-6238 and
+		RFC-4226, with Base32 codec (RFC-4648) and otpauth:// URI
+		parser/builder.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">paolostivanin/libcotp</remote-id>
+		<bugs-to>https://github.com/paolostivanin/libcotp/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

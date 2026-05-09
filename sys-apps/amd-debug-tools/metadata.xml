@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		Helpful tools for debugging AMD Zen systems. This repository hosts
+		open tools that are useful for debugging issues on AMD systems.
+	</longdescription>
+	<upstream>
+		<remote-id type="cgit">https://git.kernel.org/pub/scm/linux/kernel/git/superm1/amd-debug-tools.git</remote-id>
+	</upstream>
+</pkgmetadata>

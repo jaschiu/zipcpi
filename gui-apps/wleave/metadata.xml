@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		A Wayland layer-shell logout prompt! Originally a fork of
+		wlogout, wleave is now natively GTK4 and Libadwaita and has a
+		bunch of added quality-of-life features.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">AMNatty/wleave</remote-id>
+		<bugs-to>https://github.com/AMNatty/wleave/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

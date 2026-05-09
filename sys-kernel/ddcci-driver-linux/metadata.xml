@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		A pair of Linux kernel drivers for DDC/CI monitors.
+
+		DDC/CI is a control protocol for monitor settings supported by
+		most monitors since about 2005. It is based on ACCESS.bus (an
+		early USB predecessor).
+	</longdescription>
+	<upstream>
+		<remote-id type="gitlab">ddcci-driver-linux/ddcci-driver-linux</remote-id>
+		<bugs-to>https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux/-/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		A highly secure GTK4/libadwaita application for managing TOTP and
+		HOTP two-factor authentication tokens, with CLI and
+		desktop-search integration.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">paolostivanin/OTPClient</remote-id>
+		<bugs-to>https://github.com/paolostivanin/OTPClient/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
