@@ -6,17 +6,18 @@ EAPI=8
 LLVM_COMPAT=( 20 )
 MY_PN="SPIRV-LLVM-Translator"
 V=rocm-7.1.1
+MY_P="${MY_PN}-${PV}"
 
 inherit cmake-multilib flag-o-matic llvm-r2 multiprocessing
 
 DESCRIPTION="Bi-directional translator between SPIR-V and LLVM IR"
-HOMEPAGE="https://github.com/ROCm/SPIRV-LLVM-Translator"
-SRC_URI="https://github.com/ROCm/${MY_PN}/archive/${V}.tar.gz"
-S="$WORKDIR/$MY_PN-$V"
+HOMEPAGE="https://github.com/ROCm/${MY_PN}"
+SRC_URI="https://github.com/ROCm/${MY_PN}/archive/${V}.tar.gz -> ${P}.tar.gz"
+S="${WORKDIR}/${MY_P}"
 
 LICENSE="UoI-NCSA"
 SLOT="$(ver_cut 1)"
-KEYWORDS="amd64 arm64 ~loong ~riscv x86"
+KEYWORDS="amd64 arm arm64 ~loong ~riscv x86"
 IUSE="test"
 RESTRICT="!test? ( test )"
 
@@ -25,7 +26,7 @@ RDEPEND="
 	llvm-core/llvm:${SLOT}=[${MULTILIB_USEDEP}]
 "
 DEPEND="${RDEPEND}
-	>=dev-util/spirv-headers-1.4.321.0
+	>=dev-util/spirv-headers-1.4.328.0
 "
 BDEPEND="
 	virtual/pkgconfig
@@ -34,6 +35,8 @@ BDEPEND="
 		llvm-core/clang:${SLOT}
 	)
 "
+
+PATCHES=( "${FILESDIR}"/${PN}-20.1.3-option-registered.patch )
 
 src_prepare() {
 	append-flags -fPIC

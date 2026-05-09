@@ -17,9 +17,14 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="UoI-NCSA"
 SLOT="$(ver_cut 1)"
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~riscv ~x86"
+KEYWORDS="amd64 arm arm64 ~loong ~riscv x86"
 IUSE="test"
-RESTRICT="!test? ( test )"
+RESTRICT="!test? ( test )
+	arm? ( test )
+	arm64? ( test )
+	loong? ( test )
+	riscv? ( test )
+"
 
 RDEPEND="
 	dev-util/spirv-tools[${MULTILIB_USEDEP}]
@@ -51,6 +56,7 @@ src_prepare() {
 
 multilib_src_configure() {
 	local mycmakeargs=(
+		-DBASE_LLVM_VERSION="${PV}"
 		-DCCACHE_ALLOWED="OFF"
 		-DCMAKE_INSTALL_PREFIX="$(get_llvm_prefix)"
 		-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR="${ESYSROOT}/usr/include/spirv"
