@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		Stretchly is a cross-platform Electron app that reminds you to take
+		breaks while working at the computer. This package installs the
+		upstream-provided pre-built Linux bundle (with bundled Electron) to
+		/opt/stretchly.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">hovancik/stretchly</remote-id>
+		<bugs-to>https://github.com/hovancik/stretchly/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

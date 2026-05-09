@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Stretchly
+GenericName=Break Time Reminder
+Comment=The break time reminder app
+Exec=stretchly %U
+Icon=stretchly
+Terminal=false
+StartupWMClass=Stretchly
+Categories=Utility;
+Keywords=break;reminder;health;
