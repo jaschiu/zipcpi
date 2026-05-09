@@ -7,7 +7,7 @@ inherit cmake
 
 DESCRIPTION="C library that generates TOTP and HOTP"
 HOMEPAGE="https://github.com/paolostivanin/libcotp"
-SRC_URI="https://github.com/paolostivanin/libcotp/archive/v${PV}.zip -> ${P}.zip"
+SRC_URI="https://github.com/paolostivanin/libcotp/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
