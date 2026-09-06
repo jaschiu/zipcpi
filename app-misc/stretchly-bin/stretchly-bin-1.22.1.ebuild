@@ -74,14 +74,21 @@ src_install() {
 	[[ -d ${appdir} ]] || die "unexpected upstream tarball layout: ${appdir}"
 	cd "${appdir}" || die
 
-	# Drop bits that are unused on Linux (Windows-only native modules ship in
-	# the asar.unpacked tree and would otherwise be flagged by QA).
-	local -a toremove=(
-		LICENSE.electron.txt
-		LICENSES.chromium.html
-		resources/app.asar.unpacked/node_modules/windows-focus-assist
-	)
-	rm -rf "${toremove[@]}" || die
+	rm LICENSE.electron.txt LICENSES.chromium.html || die
+
+	# windows-focus-assist is imported eagerly on every platform and marked as
+	# unpacked in app.asar, so retain its JS entry point but drop Windows payloads.
+	local wfa="resources/app.asar.unpacked/node_modules/windows-focus-assist"
+	if [[ -d ${wfa} ]] ; then
+		rm -rf \
+			"${wfa}"/build \
+			"${wfa}"/lib/Note.txt \
+			"${wfa}"/lib/quiethours.idl \
+			"${wfa}"/lib/quiethours_h.h \
+			"${wfa}"/lib/quiethours_i.c \
+			"${wfa}"/node_modules \
+			"${wfa}"/sample || die
+	fi
 
 	# Drop prebuilt .node addons for non-linux arches; leave the linux-*
 	# directory's full ABI matrix intact so the runtime picks the right one.
