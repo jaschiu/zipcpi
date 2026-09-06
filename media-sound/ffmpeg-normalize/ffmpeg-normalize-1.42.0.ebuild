@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=uv-build
-PYTHON_COMPAT=( python3_{9..14} )
+PYTHON_COMPAT=( python3_{10..14} )
 
 inherit distutils-r1
 
@@ -19,8 +19,7 @@ KEYWORDS="~*"
 RDEPEND="
 	>=dev-python/tqdm-4.64.1[${PYTHON_USEDEP}]
 	>=dev-python/ffmpeg-progress-yield-1.0.1[${PYTHON_USEDEP}]
-	dev-python/colorlog[${PYTHON_USEDEP}]
+	>=dev-python/colorlog-6.7.0[${PYTHON_USEDEP}]
 	>=media-libs/mutagen-1.47.0[${PYTHON_USEDEP}]
 	media-video/ffmpeg
 "
-
