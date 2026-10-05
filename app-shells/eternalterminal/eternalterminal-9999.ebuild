@@ -28,9 +28,6 @@ REQUIRED_USE="
 	systemd? ( server )"
 
 DEPEND="
-	dev-cpp/cpp-httplib
-	dev-cpp/nlohmann_json
-	dev-libs/cxxopts
 	dev-libs/libsodium
 	dev-libs/protobuf
 	dev-libs/openssl
@@ -41,17 +38,14 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
-PATCHES=(
-	"${FILESDIR}/${P}-fix_cmake_package_detection.patch"
-)
-
 src_configure() {
 	local mycmakeargs=(
-		"-DWITH_SELINUX=$(usex selinux)"
-		"-DWITH_SENTRY=$(usex sentry)"
-		"-DWITH_UTEMPTER=$(usex utempter)"
+		"-DDISABLE_VCPKG=ON"
 		"-DBUILD_TESTING=OFF"
+		"-DDISABLE_SENTRY=$(usex sentry OFF ON)"
 		"-DDISABLE_TELEMETRY=$(usex telemetry OFF ON)"
+		"-DCMAKE_DISABLE_FIND_PACKAGE_UTempter=$(usex utempter OFF ON)"
+		"-DCMAKE_DISABLE_FIND_PACKAGE_SELinux=$(usex selinux OFF ON)"
 	)
 
 	cmake_src_configure
