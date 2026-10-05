@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		Devin is an AI software engineer.  The Devin CLI is a fast terminal
+		agent that can run locally against your repositories, hand off to
+		cloud sandboxes, and act as an ACP (Agent Client Protocol) server
+		for editors.  This package installs the upstream prebuilt binary.
+	</longdescription>
+	<upstream>
+		<bugs-to>https://devin.ai/support</bugs-to>
+	</upstream>
+</pkgmetadata>
