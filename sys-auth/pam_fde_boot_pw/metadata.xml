@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>~kennylevinsen@sr.ht</email>
+		<name>Kenny Levinsen</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="sourcehut">~kennylevinsen/pam_fde_boot_pw</remote-id>
+	</upstream>
+	<longdescription>
+		pam_fde_boot_pw transfers passwords stored by early full disk encryption
+		unlock from the kernel keyring to the PAM session, allowing user-space
+		keyrings like gkr and kwallet5 to be automatically unlocked without
+		additional password authentication.
+	</longdescription>
+</pkgmetadata>
