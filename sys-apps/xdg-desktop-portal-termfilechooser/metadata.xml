@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		xdg-desktop-portal-termfilechooser is an xdg-desktop-portal
+		backend that provides file chooser dialogs using terminal file
+		managers such as yazi, lf, ranger, or nnn in a floating terminal
+		window.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">hunkyburrito/xdg-desktop-portal-termfilechooser</remote-id>
+		<bugs-to>https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
