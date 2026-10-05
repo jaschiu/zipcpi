@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		ashell is a ready to go status bar for Wayland compositors such
+		as Hyprland and Niri, written in Rust with the iced GUI toolkit.
+		It provides workspaces, windows, media, system tray, and system
+		info modules.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">MalpenZibo/ashell</remote-id>
+		<bugs-to>https://github.com/MalpenZibo/ashell/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
