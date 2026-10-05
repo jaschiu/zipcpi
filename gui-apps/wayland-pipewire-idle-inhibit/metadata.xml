@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		wayland-pipewire-idle-inhibit inhibits the Wayland idle mechanism
+		while audio is playing through PipeWire, preventing the screen
+		from locking or monitors from sleeping during media playback.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">rafaelrc7/wayland-pipewire-idle-inhibit</remote-id>
+		<bugs-to>https://github.com/rafaelrc7/wayland-pipewire-idle-inhibit/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
