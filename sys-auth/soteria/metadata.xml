@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		soteria is a Polkit authentication agent written in GTK4,
+		designed for wlroots-based Wayland compositors.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">imvaskel/soteria</remote-id>
+		<bugs-to>https://github.com/imvaskel/soteria/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
