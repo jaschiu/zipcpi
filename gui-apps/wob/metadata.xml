@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>general@jasonchiu.slmail.me</email>
+		<name>Jason Chiu</name>
+	</maintainer>
+	<longdescription lang="en">
+		wob is a lightweight overlay bar for Wayland that displays a
+		progress bar read from standard input, typically used to show
+		volume, backlight, or other values in wlroots-based compositors.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">francma/wob</remote-id>
+		<bugs-to>https://github.com/francma/wob/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
